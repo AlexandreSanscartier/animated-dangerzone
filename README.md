@@ -1,4 +1,4 @@
 animated-dangerzone
 ===================
 
-The Resistane
+The Resistance
