@@ -143,6 +143,10 @@ public class Resistance {
 			System.out.println("Yes: " + yesVotes);
 			System.out.println("No : " + noVotes);
 			voteCount++;
+			if(yesVotes <= noVotes) {
+				setNextLeader();
+				mockTeamAssignments();
+			}
 		} while(yesVotes <= noVotes && voteCount != 5);
 		if(voteCount == 5) {
 			System.out.println("Spies win!");
