@@ -1,70 +1,82 @@
 package com.resistance.server;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.resistance.game.NetworkResistanceGame;
+import com.resistance.server.commands.ServerCommand;
 import com.resistance.util.NetworkUtil;
 
 public class Server {
 
 	private final int port = NetworkUtil.getServerPort();
-	private ServerSocket serverSocket;
-	private List<Socket> clientSockets;
+	private List<ServerCommand> serverCommands; 
 
-	private List<ServerThread> serverThreads;
-	
+	private ServerConnectionThread serverConnectionThread;
+	private List<ServerClientConnectionThread> clientConnectionThreads;
+
 	public static void main(String[] args) {
 		Server s = new Server();
 		s.init();
 	}
-	
-	public List<ServerThread> getServerThreads() {
-		return serverThreads;
+
+	public int getPort() {
+		return port;
 	}
 	
+	protected void addServerThread(ServerClientConnectionThread st) {
+		clientConnectionThreads.add(st);
+	}
+
+	public void pushCommand(ServerCommand command) {
+		serverCommands.add(command);
+	}
+
+	public List<ServerClientConnectionThread> getServerThreads() {
+		return clientConnectionThreads;
+	}
+
 	public void init() {
+		serverCommands = new ArrayList<ServerCommand>();
+		clientConnectionThreads = new ArrayList<ServerClientConnectionThread>();
+		
+		serverConnectionThread = new ServerConnectionThread(this);
+		Thread t = new Thread(serverConnectionThread);
+		t.start();
 
-		serverThreads = new ArrayList<ServerThread>();
-
-		// create Server socket
-		try {
-
-			serverSocket = new ServerSocket(port);
-
-		} catch (IOException e) {
-
-			System.out.println("Can't listen to port : " + port);
-		}
-
-		clientSockets = new ArrayList<Socket>();                
-		System.out.println("Awaiting Connections...");
-
-		// Listen for connection
+		// Run commands
 		while(true) {
-
-			try {
-
-				Socket clientSocket = serverSocket.accept();
-				clientSockets.add(clientSocket);
-
-				ServerThread st = new ServerThread(clientSocket, this);
-				serverThreads.add(st);
-				Thread t = new Thread(st);
-				t.start();
-
-			} catch (IOException e) {
-
-				System.err.println("Accept a échoué.");
-				System.exit(1);
-
+			
+			//Once 5 clients have connected start the game
+			if(clientConnectionThreads.size() == 5) {
+				System.out.println("5 Clients connected");
+				NetworkResistanceGame nrg = new NetworkResistanceGame(clientConnectionThreads.size());
+				nrg.PlayGame();
+				System.exit(0);
 			}
 
-			System.out.println("Connection accepted");
+			//TODO: Check for commands to run on server
+			if(serverCommands.size() > 0)
+				runCommands();
+			
+			Thread.yield();
 
 		}
+
+	}
+
+	//Synchronized because what happens if a commands comes in while we're running this function?
+	//TODO: Flag commands that have been executed for deletion
+	private synchronized void runCommands() {
+		//Run all current commands that are in the command queue
+		for(int i = 0; i < serverCommands.size(); i++) {
+			serverCommands.get(i).execute();
+		}
+		//Remove all commands since they have been run or flag them for deletion??
+		for(int i = 0; i < serverCommands.size(); i++) {
+			serverCommands.remove(i);
+		}
+
 
 	}
 

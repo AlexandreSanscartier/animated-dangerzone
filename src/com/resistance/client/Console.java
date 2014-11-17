@@ -1,6 +1,6 @@
 package com.resistance.client;
 
-import com.resistance.game.Resistance;
+import com.resistance.game.ConsoleResistanceGame;
 
 public class Console {
 
@@ -9,7 +9,7 @@ public class Console {
 		System.out.println("Console App starting");
 		System.out.println("====================");
 		
-		Resistance resistance = new Resistance(10);
+		ConsoleResistanceGame resistance = new ConsoleResistanceGame(10);
 		resistance.PlayGame();
 	}
 

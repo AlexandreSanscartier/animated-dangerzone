@@ -31,6 +31,7 @@ public class NetworkedClient {
 			//9. Server send results to all players
 			
 			//10. Server sends next leader
+			Thread.yield();
 			
 		}
 	}
