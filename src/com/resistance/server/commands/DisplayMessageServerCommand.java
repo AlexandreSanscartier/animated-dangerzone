@@ -3,6 +3,7 @@ package com.resistance.server.commands;
 public class DisplayMessageServerCommand implements ServerCommand {
 	
 	private String message;
+
 	
 	public DisplayMessageServerCommand(String message) {
 		
@@ -15,6 +16,8 @@ public class DisplayMessageServerCommand implements ServerCommand {
 		
 		System.out.println(message);
 
+
 	}
+
 
 }

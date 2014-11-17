@@ -12,10 +12,10 @@ public abstract class ReistanceGame {
 	protected final int[] SPIES = {2,2,3,3,3,4};
 	protected final int[][] PLAYERS_PER_TEAM  = {
 			{2,3,2,3,3}, //For 5 players
-			{2,3,4,3,4},  //For 6 players
-			{2,3,3,4,4},  //For 7 players
-			{3,4,4,5,5},  //For 8 players
-			{3,4,4,5,5},  //For 9 players
+			{2,3,4,3,4}, //For 6 players
+			{2,3,3,4,4}, //For 7 players
+			{3,4,4,5,5}, //For 8 players
+			{3,4,4,5,5}, //For 9 players
 			{3,4,4,5,5}  //For 10 players
 	};
 
@@ -82,8 +82,9 @@ public abstract class ReistanceGame {
 	 * @param player
 	 */
 	public void removeTeamMember(Player player) {
-		// TODO Auto-generated method stub
-
+		if(teamMembers.contains(player)) {
+			teamMembers.remove(player);
+		}
 	}
 
 	/**

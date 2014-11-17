@@ -23,7 +23,7 @@ public class Server {
 	public int getPort() {
 		return port;
 	}
-	
+
 	protected void addServerThread(ServerClientConnectionThread st) {
 		clientConnectionThreads.add(st);
 	}
@@ -39,26 +39,26 @@ public class Server {
 	public void init() {
 		serverCommands = new ArrayList<ServerCommand>();
 		clientConnectionThreads = new ArrayList<ServerClientConnectionThread>();
-		
+
 		serverConnectionThread = new ServerConnectionThread(this);
 		Thread t = new Thread(serverConnectionThread);
 		t.start();
 
 		// Run commands
 		while(true) {
-			
+
 			//Once 5 clients have connected start the game
 			if(clientConnectionThreads.size() == 5) {
-				System.out.println("5 Clients connected");
-				NetworkResistanceGame nrg = new NetworkResistanceGame(clientConnectionThreads.size());
-				nrg.PlayGame();
-				System.exit(0);
+				//TODO: NetworkResistanceGame needs to be in its own Thread
+				NetworkResistanceGame nrg = new NetworkResistanceGame(clientConnectionThreads.size(), this);
+				Thread networkGame = new Thread(nrg);
+				networkGame.start();
 			}
 
 			//TODO: Check for commands to run on server
 			if(serverCommands.size() > 0)
 				runCommands();
-			
+
 			Thread.yield();
 
 		}

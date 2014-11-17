@@ -23,10 +23,6 @@ public class ServerClientConnectionThread implements Runnable {
 
 		// 1. Initialize ServerThread
 		
-		//TODO: REMOVE LINE
-		DisplayMessageServerCommand command = new DisplayMessageServerCommand("ServerThread Created");
-		server.pushCommand(command);
-		
 		while(true) {
 			// 2. While running Thread
 			
